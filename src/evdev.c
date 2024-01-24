@@ -129,14 +129,20 @@ evdev_update_key_down_count(struct evdev_device *device,
 			    int code,
 			    int pressed)
 {
-	int key_count;
+	int key_count = 0;
 	assert(code >= 0 && code < KEY_CNT);
 
 	if (pressed) {
 		key_count = ++device->key_count[code];
 	} else {
-		assert(device->key_count[code] > 0);
-		key_count = --device->key_count[code];
+		if (device->key_count[code] > 0) {
+			key_count = --device->key_count[code];
+		} else {
+			evdev_log_bug_libinput(device,
+					       "releasing key %s with count %d\n",
+					       libevdev_event_code_get_name(EV_KEY, code),
+					       device->key_count[code]);
+		}
 	}
 
 	if (key_count > 32) {
@@ -378,8 +384,7 @@ evdev_transform_relative(struct evdev_device *device,
 static inline double
 scale_axis(const struct input_absinfo *absinfo, double val, double to_range)
 {
-	return (val - absinfo->minimum) * to_range /
-		(absinfo->maximum - absinfo->minimum + 1);
+	return (val - absinfo->minimum) * to_range / absinfo_range(absinfo);
 }
 
 double
@@ -1673,8 +1678,8 @@ evdev_fix_abs_resolution(struct evdev_device *device,
 	 */
 	if (!evdev_read_attr_res_prop(device, &xres, &yres) &&
 	    evdev_read_attr_size_prop(device, &widthmm, &heightmm)) {
-		xres = (absx->maximum - absx->minimum)/widthmm;
-		yres = (absy->maximum - absy->minimum)/heightmm;
+		xres = absinfo_range(absx)/widthmm;
+		yres = absinfo_range(absy)/heightmm;
 	}
 
 	/* libevdev_set_abs_resolution() changes the absinfo we already
@@ -1843,10 +1848,8 @@ evdev_extract_abs_axes(struct evdev_device *device,
 
 	device->abs.absinfo_x = libevdev_get_abs_info(evdev, ABS_X);
 	device->abs.absinfo_y = libevdev_get_abs_info(evdev, ABS_Y);
-	device->abs.dimensions.x = abs(device->abs.absinfo_x->maximum -
-				       device->abs.absinfo_x->minimum);
-	device->abs.dimensions.y = abs(device->abs.absinfo_y->maximum -
-				       device->abs.absinfo_y->minimum);
+	device->abs.dimensions.x = abs((int)absinfo_range(device->abs.absinfo_x));
+	device->abs.dimensions.y = abs((int)absinfo_range(device->abs.absinfo_y));
 
 	if (evdev_is_fake_mt_device(device) ||
 	    !libevdev_has_event_code(evdev, EV_ABS, ABS_MT_POSITION_X) ||
@@ -1865,10 +1868,8 @@ evdev_extract_abs_axes(struct evdev_device *device,
 
 	device->abs.absinfo_x = libevdev_get_abs_info(evdev, ABS_MT_POSITION_X);
 	device->abs.absinfo_y = libevdev_get_abs_info(evdev, ABS_MT_POSITION_Y);
-	device->abs.dimensions.x = abs(device->abs.absinfo_x->maximum -
-				       device->abs.absinfo_x->minimum);
-	device->abs.dimensions.y = abs(device->abs.absinfo_y->maximum -
-				       device->abs.absinfo_y->minimum);
+	device->abs.dimensions.x = abs((int)absinfo_range(device->abs.absinfo_x));
+	device->abs.dimensions.y = abs((int)absinfo_range(device->abs.absinfo_y));
 	device->is_mt = 1;
 }
 
@@ -2562,8 +2563,8 @@ evdev_device_calibrate(struct evdev_device *device,
 		return;
 	}
 
-	sx = device->abs.absinfo_x->maximum - device->abs.absinfo_x->minimum + 1;
-	sy = device->abs.absinfo_y->maximum - device->abs.absinfo_y->minimum + 1;
+	sx = absinfo_range(device->abs.absinfo_x);
+	sy = absinfo_range(device->abs.absinfo_y);
 
 	/* The transformation matrix is in the form:
 	 *  [ a b c ]
@@ -3119,7 +3120,7 @@ evdev_device_destroy(struct evdev_device *device)
 bool
 evdev_tablet_has_left_handed(struct evdev_device *device)
 {
-	bool has_left_handed = false;
+	bool has_left_handed = true;
 #if HAVE_LIBWACOM
 	struct libinput *li = evdev_libinput_context(device);
 	WacomDeviceDatabase *db = NULL;
@@ -3140,8 +3141,7 @@ evdev_tablet_has_left_handed(struct evdev_device *device)
 				   error);
 
 	if (d) {
-		if (libwacom_is_reversible(d))
-			has_left_handed = true;
+		has_left_handed = !!libwacom_is_reversible(d);
 	} else if (libwacom_error_get_code(error) == WERROR_UNKNOWN_MODEL) {
 		evdev_log_info(device,
 			       "tablet '%s' unknown to libwacom\n",

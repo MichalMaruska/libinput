@@ -69,7 +69,7 @@ will be:
 
      $> git clone https://gitlab.freedesktop.org/libinput/libinput
      $> cd libinput
-     $> meson --prefix=/usr builddir/
+     $> meson setup --prefix=/usr builddir/
      $> ninja -C builddir/
      $> sudo ninja -C builddir/ install
 
@@ -78,6 +78,15 @@ You can omit the last step if you only want to test locally.
 ------------------------------------------------------------------------------
 Working on the code
 ------------------------------------------------------------------------------
+
+If you are planning to send patches, it's a good idea to set up
+`pre-commit <https://pre-commit.com/>`_ with these commands::
+
+     $> pre-commit install
+     $> pre-commit install --hook-type pre-push
+
+This will check a few things before you commit and/or push to your repos to
+reduce the turnaround time for some common mistakes.
 
 libinput has a roughly three-parts architecture:
 
