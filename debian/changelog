@@ -1,8 +1,8 @@
-libinput (1.25.0-1) UNRELEASED; urgency=medium
+libinput (1.25.0-1) unstable; urgency=medium
 
   * New upstream release.
 
- -- Timo Aaltonen <tjaalton@debian.org>  Fri, 25 Aug 2023 14:36:38 +0300
+ -- Timo Aaltonen <tjaalton@debian.org>  Mon, 05 Feb 2024 14:20:23 +0200
 
 libinput (1.23.0-2.1) unstable; urgency=medium
 
