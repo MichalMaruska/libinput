@@ -4,6 +4,13 @@ libinput (1.25.0-1) UNRELEASED; urgency=medium
 
  -- Timo Aaltonen <tjaalton@debian.org>  Fri, 25 Aug 2023 14:36:38 +0300
 
+libinput (1.23.0-2.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * tools: Remove references to LIBINPUT_QUIRKS_SRCDIR. (Closes: #995809)
+
+ -- Vagrant Cascadian <vagrant@reproducible-builds.org>  Wed, 06 Dec 2023 15:10:33 -0800
+
 libinput (1.23.0-2) unstable; urgency=medium
 
   * debian/control:
