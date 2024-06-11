@@ -2,6 +2,7 @@ libinput (1.26.0-1) UNRELEASED; urgency=medium
 
   * New upstream release.
   * watch: Updated.
+  * symbols: Updated.
 
  -- Timo Aaltonen <tjaalton@debian.org>  Tue, 11 Jun 2024 13:10:28 +0300
 
