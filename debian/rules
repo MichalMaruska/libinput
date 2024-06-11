@@ -7,12 +7,12 @@ endif
 override_dh_auto_configure:
 	dh_auto_configure -B build-deb -- \
 		-Ddocumentation=false \
-		-Dudev-dir=/lib/udev
+		-Dudev-dir=/usr/lib/udev
 
 ifeq ($(with_udeb),yes)
 	dh_auto_configure -B build-udeb -- \
 		-Ddocumentation=false \
-		-Dudev-dir=/lib/udev \
+		-Dudev-dir=/usr/lib/udev \
 		-Dlibwacom=false
 endif
 
