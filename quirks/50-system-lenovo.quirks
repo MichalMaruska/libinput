@@ -211,7 +211,7 @@ MatchDMIModalias=dmi:*svnLENOVO:*pvrThinkPadX200Tablet:*
 ModelTabletModeNoSuspend=1
 
 [Lenovo X201 Tablet]
-MatchName=At Translated Set 2 keyboard
+MatchName=AT Translated Set 2 keyboard
 MatchDMIModalias=dmi:*svnLENOVO:*pvrThinkPadX201Tablet:*
 ModelTabletModeNoSuspend=1
 
@@ -248,6 +248,15 @@ MatchUdevType=keyboard
 MatchBus=usb
 MatchVendor=0x048D
 MatchProduct=0xC102
+AttrKeyboardIntegration=internal
+
+# Tested on Legion Pro 5 16IRX8
+# 048d:c103 Integrated Technology Express, Inc. ITE Device(8910)
+[Lenovo Legion 5 Keyboard (C103)]
+MatchUdevType=keyboard
+MatchBus=usb
+MatchVendor=0x048D
+MatchProduct=0xC103
 AttrKeyboardIntegration=internal
 
 [Lenovo Legion 5 Keyboard (C955)]
@@ -289,6 +298,13 @@ MatchUdevType=keyboard
 MatchBus=usb
 MatchVendor=0x048D
 MatchProduct=0xC967
+AttrKeyboardIntegration=internal
+
+[Lenovo Legion Slim 7 Gen 8]
+MatchUdevType=keyboard
+MatchBus=usb
+MatchVendor=0x048D
+MatchProduct=0xC987
 AttrKeyboardIntegration=internal
 
 # https://gitlab.freedesktop.org/libinput/libinput/-/issues/604
@@ -338,3 +354,25 @@ MatchName=*Elan Touchpad
 MatchDMIModalias=dmi:*svnLENOVO:*:pvrThinkPadE14Gen2*
 AttrPalmPressureThreshold=300
 AttrPressureRange=10:8
+
+# White Backlit Keyboard
+[Lenovo Ideapad Gaming 3]
+MatchUdevType=keyboard
+MatchBus=usb
+MatchVendor=0x048D
+MatchProduct=0xC966
+AttrKeyboardIntegration=internal
+
+[Lenovo Thinkpad Yoga X390]
+MatchUdevType=pointingstick
+MatchName=*TPPS/2 Elan TrackPoint*
+MatchDMIModalias=dmi:*svnLENOVO:*pvrThinkPadX390Yoga*:*
+AttrTrackpointMultiplier=0.4
+
+# This should cover all keyboards that are misidentified as external.
+# Tested on Lenovo Legion 5 Pro (2023)
+[Lenovo 16ARX8 keyboard]
+MatchName=ITE Tech. Inc. ITE Device(8910) Keyboard
+MatchUdevType=keyboard
+MatchDMIModalias=dmi:*svnLENOVO:*
+AttrKeyboardIntegration=internal

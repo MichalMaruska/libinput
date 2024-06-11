@@ -161,6 +161,21 @@ litest_fail_comparison_ptr(const char *file,
 						   #a_, #b_); \
 	} while(0)
 
+#define litest_assert_neg_errno_success(a_) \
+	do { \
+		__typeof__(a_) _a = a_; \
+		if (_a < 0) \
+			litest_abort_msg("Unexpected negative errno: %d (%s)", _a, strerror(-_a)); \
+	} while(0);
+
+#define litest_assert_errno_success(a_) \
+	do { \
+		__typeof__(a_) _a = a_; \
+		__typeof__(a_) _e = errno; \
+		if (_a < 0) \
+			litest_abort_msg("Unexpected errno: %d (%s)", _e, strerror(_e)); \
+	} while(0);
+
 #define litest_assert_int_eq(a_, b_) \
 	litest_assert_comparison_int_(a_, ==, b_)
 
@@ -315,6 +330,9 @@ enum litest_device_type {
 	/* Tablets */
 	LITEST_ELAN_TABLET,
 	LITEST_HUION_TABLET,
+	LITEST_HUION_Q620M_DIAL,
+	LITEST_TABLET_DOUBLEDIAL_PAD,
+	LITEST_TABLET_REL_DIAL_PAD,
 	LITEST_QEMU_TABLET,
 	LITEST_UCLOGIC_TABLET,
 	LITEST_WACOM_BAMBOO,
@@ -380,6 +398,7 @@ enum litest_device_type {
 #define LITEST_TOTEM		bit(31)
 #define LITEST_FORCED_PROXOUT	bit(32)
 #define LITEST_PRECALIBRATED	bit(33)
+#define LITEST_DIAL		bit(34)
 
 /* this is a semi-mt device, so we keep track of the touches that the tests
  * send and modify them so that the first touch is always slot 0 and sends
@@ -812,6 +831,9 @@ litest_is_pad_button_event(struct libinput_event *event,
 			   unsigned int button,
 			   enum libinput_button_state state);
 struct libinput_event_tablet_pad *
+litest_is_pad_dial_event(struct libinput_event *event,
+			 unsigned int number);
+struct libinput_event_tablet_pad *
 litest_is_pad_ring_event(struct libinput_event *event,
 			 unsigned int number,
 			 enum libinput_tablet_pad_ring_axis_source source);
@@ -1130,6 +1152,18 @@ litest_enable_clickfinger(struct litest_device *dev)
 	status = libinput_device_config_click_set_method(device,
 				 LIBINPUT_CONFIG_CLICK_METHOD_CLICKFINGER);
 	expected = LIBINPUT_CONFIG_STATUS_SUCCESS;
+	litest_assert_int_eq(status, expected);
+}
+
+static inline void
+litest_set_clickfinger_map(struct litest_device *dev,
+			   enum libinput_config_clickfinger_button_map map)
+{
+	enum libinput_config_status status, expected;
+	struct libinput_device *device = dev->libinput_device;
+
+	expected = LIBINPUT_CONFIG_STATUS_SUCCESS;
+	status = libinput_device_config_click_set_clickfinger_button_map(device, map);
 	litest_assert_int_eq(status, expected);
 }
 

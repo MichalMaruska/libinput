@@ -50,8 +50,10 @@ include:
 
 workflow:
   rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
-    - if: $CI_PIPELINE_SOURCE == 'push'
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
+      when: never
+    - if: $CI_COMMIT_BRANCH
 
 stages:
   - sanity check     # CI/commit checks
@@ -695,6 +697,9 @@ check-merge-request:
     reports:
       junit: results.xml
   allow_failure: true
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+
 
 {% for distro in distributions if distro.name == "fedora" %}
 {% set version = "{}".format(distro.versions|last()) %}
