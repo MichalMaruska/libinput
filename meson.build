@@ -1,5 +1,5 @@
 project('libinput', 'c',
-	version : '1.26.0',
+	version : '1.26.2',
 	license : 'MIT/Expat',
 	default_options : [ 'c_std=gnu99', 'warning_level=2' ],
 	meson_version : '>= 0.56.0')
@@ -517,6 +517,7 @@ executable('libinput-analyze',
 	   )
 
 src_python_tools = files(
+	      'tools/libinput-analyze-buttons.py',
 	      'tools/libinput-analyze-per-slot-delta.py',
 	      'tools/libinput-analyze-recording.py',
 	      'tools/libinput-analyze-touch-down-state.py',
@@ -990,6 +991,7 @@ endif
 src_man += files(
 	'tools/libinput.man',
 	'tools/libinput-analyze.man',
+	'tools/libinput-analyze-buttons.man',
 	'tools/libinput-analyze-per-slot-delta.man',
 	'tools/libinput-analyze-recording.man',
 	'tools/libinput-analyze-touch-down-state.man',

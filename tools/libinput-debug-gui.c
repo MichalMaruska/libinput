@@ -487,6 +487,7 @@ draw_evdev_abs(struct window *w, cairo_t *cr)
 	outline_height = 1.0 * height/width * normalized_width;
 	outline_width = normalized_width;
 
+	cairo_set_source_rgb(cr, .2, .2, .8);
 	x = 1.0 * (w->evdev.x - ax->minimum)/width * outline_width;
 	y = 1.0 * (w->evdev.y - ay->minimum)/height * outline_height;
 	x += center_x - outline_width/2;
@@ -1655,6 +1656,7 @@ static void
 handle_event_tablet(struct libinput_event *ev, struct window *w)
 {
 	struct libinput_event_tablet_tool *t = libinput_event_get_tablet_tool_event(ev);
+	struct libinput_tablet_tool *tool = libinput_event_tablet_tool_get_tool(t);
 	double x, y;
 	struct point point;
 	int idx;
@@ -1667,6 +1669,7 @@ handle_event_tablet(struct libinput_event *ev, struct window *w)
 
 	switch (libinput_event_get_type(ev)) {
 	case LIBINPUT_EVENT_TABLET_TOOL_PROXIMITY:
+		tools_tablet_tool_apply_config(tool, &w->options);
 		if (libinput_event_tablet_tool_get_proximity_state(t) ==
 		    LIBINPUT_TABLET_TOOL_PROXIMITY_STATE_OUT) {
 			w->tool.x_in = 0;

@@ -111,7 +111,7 @@ pad_process_relative(struct pad_dispatch *pad,
 		break;
 	case REL_WHEEL:
 		if (!pad->dials.has_hires_dial) {
-			pad->dials.dial1 = e->value * 120;
+			pad->dials.dial1 = -1 * e->value * 120;
 			pad->changed_axes |= PAD_AXIS_DIAL1;
 			pad_set_status(pad, PAD_AXES_UPDATED);
 		}
@@ -124,12 +124,12 @@ pad_process_relative(struct pad_dispatch *pad,
 		}
 		break;
 	case REL_WHEEL_HI_RES:
-		pad->dials.dial1 = e->value;
+		pad->dials.dial1 = -1 * e->value;
 		pad->changed_axes |= PAD_AXIS_DIAL1;
 		pad_set_status(pad, PAD_AXES_UPDATED);
 		break;
 	case REL_HWHEEL_HI_RES:
-		pad->dials.dial2 = e->value * 120;
+		pad->dials.dial2 = e->value;
 		pad->changed_axes |= PAD_AXIS_DIAL2;
 		pad_set_status(pad, PAD_AXES_UPDATED);
 		break;

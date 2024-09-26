@@ -64,6 +64,8 @@ enum configuration_options {
 	OPT_CUSTOM_STEP,
 	OPT_CUSTOM_TYPE,
 	OPT_ROTATION_ANGLE,
+	OPT_PRESSURE_RANGE,
+	OPT_CALIBRATION,
 };
 
 #define CONFIGURATION_OPTIONS \
@@ -97,7 +99,9 @@ enum configuration_options {
 	{ "set-custom-points",         required_argument, 0, OPT_CUSTOM_POINTS },\
 	{ "set-custom-step",           required_argument, 0, OPT_CUSTOM_STEP },\
 	{ "set-custom-type",           required_argument, 0, OPT_CUSTOM_TYPE },\
-	{ "set-rotation-angle",        required_argument, 0, OPT_ROTATION_ANGLE }
+	{ "set-rotation-angle",        required_argument, 0, OPT_ROTATION_ANGLE }, \
+	{ "set-pressure-range",        required_argument, 0, OPT_PRESSURE_RANGE }, \
+	{ "set-calibration",           required_argument, 0, OPT_CALIBRATION }
 
 enum tools_backend {
 	BACKEND_NONE,
@@ -130,6 +134,8 @@ struct tools_options {
 	size_t custom_npoints;
 	double *custom_points;
 	unsigned int angle;
+	double pressure_range[2];
+	float calibration[6];
 };
 
 void tools_init_options(struct tools_options *options);
@@ -142,6 +148,8 @@ struct libinput* tools_open_backend(enum tools_backend which,
 				    bool *grab);
 void tools_device_apply_config(struct libinput_device *device,
 			       struct tools_options *options);
+void tools_tablet_tool_apply_config(struct libinput_tablet_tool *tool,
+				    struct tools_options *options);
 int tools_exec_command(const char *prefix, int argc, char **argv);
 
 bool find_touchpad_device(char *path, size_t path_len);
