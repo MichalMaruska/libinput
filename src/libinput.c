@@ -1934,7 +1934,8 @@ mmc_weston_load_module(struct libinput *libinput,
 	return init;
 }
 
-typedef  void(*func_t)() ;
+typedef  void(*func_t)(struct libinput_fork_services* services);
+
 struct libinput_keyboard_plugin  *keyboard_pipeline =  NULL;
 
 LIBINPUT_EXPORT void
@@ -1980,14 +1981,27 @@ LIBINPUT_EXPORT int
 libinput_setup_fork(struct libinput *libinput)
 {
 	log_error(libinput, "trying to open fork\n");
+	static const char* function_name = "fork_init";
 
 	const char *mpath = getenv("LIBINPUT_MODULE_PATH");
 	if (mpath == NULL)
 		mpath="/usr/lib/libinput/modules/";
-	func_t init_fn = mmc_weston_load_module(libinput, "fork.so", "fork_init", mpath);
-	if (init_fn)
-		(*init_fn)();
+	func_t init_fn = mmc_weston_load_module(libinput, "fork.so", function_name, mpath);
+	if (init_fn) {
+		log_error(libinput, "trying to invoke %s\n", function_name);
+		// this needs a couple of functions:
+		struct libinput_fork_services *services = malloc(sizeof (struct libinput_fork_services));
 
+		*services = (struct libinput_fork_services) {
+			.libinput = libinput,
+
+			.post_event = libinput_fork_post_event,
+			.log = libinput_fork_log,
+			.vlog = libinput_fork_vlog,
+		};
+		log_error(libinput, "call %s\n", function_name);
+		(*init_fn)(services);
+	}
 	return 0;
 }
 
