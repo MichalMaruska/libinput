@@ -1935,6 +1935,14 @@ mmc_weston_load_module(struct libinput *libinput,
 }
 
 typedef  void(*func_t)() ;
+struct libinput_keyboard_plugin  *keyboard_pipeline =  NULL;
+
+LIBINPUT_EXPORT void
+libinput_register_fork(struct libinput_keyboard_plugin* p)
+{
+	keyboard_pipeline = p;
+}
+
 
 LIBINPUT_EXPORT int
 libinput_setup_fork(struct libinput *libinput)

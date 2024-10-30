@@ -3625,6 +3625,8 @@ struct libinput_keyboard_plugin
 	// timer;
 };
 
+void
+libinput_register_fork(struct libinput_keyboard_plugin* p);
 
 /**
  * @ingroup base
