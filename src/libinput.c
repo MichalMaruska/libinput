@@ -1852,6 +1852,7 @@ libinput_remove_source(struct libinput *libinput,
 	list_insert(&libinput->source_destroy_list, &source->link);
 }
 
+// mmc: not public api?
 int
 libinput_init(struct libinput *libinput,
 	      const struct libinput_interface *interface,
@@ -1861,6 +1862,7 @@ libinput_init(struct libinput *libinput,
 	assert(interface->open_restricted != NULL);
 	assert(interface->close_restricted != NULL);
 
+	// mmc: this seems global indeed!
 	libinput->epoll_fd = epoll_create1(EPOLL_CLOEXEC);
 	if (libinput->epoll_fd < 0)
 		return -1;
@@ -3315,6 +3317,7 @@ libinput_post_event(struct libinput *libinput,
 #endif
 
 	events_count++;
+	// expand:
 	if (events_count > events_len) {
 		void *tmp;
 
@@ -3349,6 +3352,7 @@ libinput_post_event(struct libinput *libinput,
 		libinput_device_ref(event->device);
 
 	libinput->events_count = events_count;
+	// store:
 	events[libinput->events_in] = event;
 	libinput->events_in = (libinput->events_in + 1) % libinput->events_len;
 }
@@ -3361,7 +3365,7 @@ libinput_get_event(struct libinput *libinput)
 	if (libinput->events_count == 0)
 		return NULL;
 
-	// mmc: circular buffer?
+	// mmc: circular buffer? pop() can it be overwritten?
 	event = libinput->events[libinput->events_out];
 	libinput->events_out =
 		(libinput->events_out + 1) % libinput->events_len;
@@ -3377,7 +3381,7 @@ libinput_next_event_type(struct libinput *libinput)
 
 	if (libinput->events_count == 0)
 		return LIBINPUT_EVENT_NONE;
-
+	// mmc: peek
 	event = libinput->events[libinput->events_out];
 	return event->type;
 }

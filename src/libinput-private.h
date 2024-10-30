@@ -145,7 +145,7 @@ struct libinput {
 		struct ratelimit expiry_in_past_limit;
 	} timer;
 
-	struct libinput_event **events;
+	struct libinput_event **events; // array of pointer.
 	size_t events_count;
 	size_t events_len;
 	size_t events_in;
