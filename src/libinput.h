@@ -3606,6 +3606,12 @@ libinput_udev_create_context(const struct libinput_interface *interface,
 			     struct udev *udev);
 
 /**
+ * Load a plugin, and invoke its init function.
+ */
+int
+libinput_setup_fork(struct libinput *libinput);
+
+/**
  * @ingroup base
  *
  * Assign a seat to this libinput context. New devices or the removal of

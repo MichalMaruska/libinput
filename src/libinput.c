@@ -33,6 +33,7 @@
 #include <sys/epoll.h>
 #include <unistd.h>
 #include <assert.h>
+#include <dlfcn.h>
 
 #include "libinput.h"
 #include "libinput-private.h"
@@ -1882,6 +1883,70 @@ libinput_init(struct libinput *libinput,
 		close(libinput->epoll_fd);
 		return -1;
 	}
+
+	return 0;
+}
+
+static void*
+mmc_weston_load_module(struct libinput *libinput,
+		       const char *name, const char *entrypoint,
+		       const char *module_dir)
+{
+	char path[PATH_MAX];
+	void *module, *init;
+	size_t len;
+
+	if (name == NULL)
+		return NULL;
+
+	if (name[0] != '/') {
+		len = snprintf(path, sizeof path, "%s/%s",
+			       module_dir, name);
+	} else {
+		len = snprintf(path, sizeof path, "%s", name);
+	}
+
+	/* snprintf returns the length of the string it would've written,
+	 * _excluding_ the NUL byte. So even being equal to the size of
+	 * our buffer is an error here. */
+	if (len >= sizeof path)
+		return NULL;
+
+	module = dlopen(path, RTLD_NOW | RTLD_NOLOAD);
+	if (module) {
+		log_info(libinput, "Module '%s' already loaded\n", path);
+	} else {
+		log_info(libinput, "Loading module '%s'\n", path);
+		module = dlopen(path, RTLD_NOW);
+		if (!module) {
+			log_error(libinput, "Failed to load module: %s\n", dlerror());
+			return NULL;
+		}
+	}
+
+	init = dlsym(module, entrypoint);
+	if (!init) {
+		log_error(libinput, "Failed to lookup init function: %s\n", dlerror());
+		dlclose(module);
+		return NULL;
+	}
+
+	return init;
+}
+
+typedef  void(*func_t)() ;
+
+LIBINPUT_EXPORT int
+libinput_setup_fork(struct libinput *libinput)
+{
+	log_error(libinput, "trying to open fork\n");
+
+	const char *mpath = getenv("LIBINPUT_MODULE_PATH");
+	if (mpath == NULL)
+		mpath="/usr/lib/libinput/modules/";
+	func_t init_fn = mmc_weston_load_module(libinput, "fork.so", "fork_init", mpath);
+	if (init_fn)
+		(*init_fn)();
 
 	return 0;
 }
