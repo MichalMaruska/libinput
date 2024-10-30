@@ -257,6 +257,7 @@ libinput.so.10 libinput10 #MINVER#
  libinput_path_create_context@LIBINPUT_0.12.0 0.15.0
  libinput_path_remove_device@LIBINPUT_0.12.0 0.15.0
  libinput_ref@LIBINPUT_0.12.0 0.15.0
+ libinput_register_fork@LIBINPUT_1.26 1.26.0
  libinput_resume@LIBINPUT_0.12.0 0.15.0
  libinput_seat_get_context@LIBINPUT_0.12.0 0.15.0
  libinput_seat_get_logical_name@LIBINPUT_0.12.0 0.15.0
@@ -265,6 +266,7 @@ libinput.so.10 libinput10 #MINVER#
  libinput_seat_ref@LIBINPUT_0.12.0 0.15.0
  libinput_seat_set_user_data@LIBINPUT_0.12.0 0.15.0
  libinput_seat_unref@LIBINPUT_0.12.0 0.15.0
+ libinput_setup_fork@LIBINPUT_1.26 1.26.0
  libinput_set_user_data@LIBINPUT_0.12.0 0.15.0
  libinput_suspend@LIBINPUT_0.12.0 0.15.0
  libinput_tablet_pad_mode_group_button_is_toggle@LIBINPUT_1.4 1.4.0
