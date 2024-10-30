@@ -3622,8 +3622,9 @@ struct libinput_fork_services
 
 struct libinput_keyboard_plugin
 {
-	void (*accept_event)(struct libinput_device *device, struct libinput_event_keyboard *key_event);
-	void (*accept_time)(struct libinput_device *device, uint64_t time);
+	void *user_data;
+	void (*accept_event)(void *user_data, const struct libinput_device *device, const struct libinput_event_keyboard *key_event);
+	void (*accept_time)(void *user_data, struct libinput_device *device, uint64_t time);
 	// timer;
 };
 

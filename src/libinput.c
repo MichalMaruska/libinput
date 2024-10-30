@@ -2571,7 +2571,7 @@ keyboard_notify_key(struct libinput_device *device,
 
 	if (keyboard_pipeline) {
 		init_event_base(&key_event->base, device, LIBINPUT_EVENT_KEYBOARD_KEY);
-		keyboard_pipeline->accept_event(device, key_event);
+		keyboard_pipeline->accept_event(keyboard_pipeline->user_data, device, key_event);
 	} else
 		post_device_event(device, time,
 			  LIBINPUT_EVENT_KEYBOARD_KEY,
