@@ -3617,6 +3617,7 @@ struct libinput_fork_services
 	void (*post_event)(struct libinput_fork_services*, struct libinput_device *device, struct libinput_event_keyboard *key_event);
 	void (*vlog)(struct libinput_fork_services*, enum libinput_log_priority priority, const char *format, va_list args);
 	void (*log)(struct libinput_fork_services*, enum libinput_log_priority priority, const char *format, ...);
+	int32_t (*rewrite) (struct libinput_event_keyboard *event, uint32_t code);
 };
 
 struct libinput_keyboard_plugin

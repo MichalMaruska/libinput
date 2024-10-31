@@ -1944,6 +1944,18 @@ libinput_register_fork(struct libinput_keyboard_plugin* p)
 	keyboard_pipeline = p;
 }
 
+static int32_t
+libinput_event_keyboard_set_key(struct libinput_event_keyboard *event, uint32_t code)
+{
+	require_event_type(libinput_event_get_context(&event->base),
+			   event->base.type,
+			   0,
+			   LIBINPUT_EVENT_KEYBOARD_KEY);
+
+	event->key = code;
+	return 0;
+}
+
 static void
 libinput_fork_vlog(struct libinput_fork_services* services,
 		  enum libinput_log_priority priority, const char *format, va_list args)
@@ -1998,6 +2010,7 @@ libinput_setup_fork(struct libinput *libinput)
 			.post_event = libinput_fork_post_event,
 			.log = libinput_fork_log,
 			.vlog = libinput_fork_vlog,
+			.rewrite = libinput_event_keyboard_set_key,
 		};
 		log_error(libinput, "call %s\n", function_name);
 		(*init_fn)(services);
