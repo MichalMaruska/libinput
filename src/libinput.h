@@ -3611,6 +3611,21 @@ libinput_udev_create_context(const struct libinput_interface *interface,
 int
 libinput_setup_fork(struct libinput *libinput);
 
+struct libinput_fork_services
+{
+	struct libinput *libinput;
+	void (*post_event)(struct libinput_fork_services*, struct libinput_device *device, struct libinput_event_keyboard *key_event);
+	void (*log)(struct libinput_fork_services*, enum libinput_log_priority priority, const char *format, ...);
+};
+
+struct libinput_keyboard_plugin
+{
+	void (*accept_event)(struct libinput_device *device, struct libinput_event_keyboard *key_event);
+	void (*accept_time)(struct libinput_device *device, uint64_t time);
+	// timer;
+};
+
+
 /**
  * @ingroup base
  *
