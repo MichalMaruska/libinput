@@ -1960,6 +1960,22 @@ libinput_fork_log(struct libinput_fork_services* services,
 	va_end(args);
 }
 
+static void
+post_device_event(struct libinput_device *device,
+		  uint64_t time,
+		  enum libinput_event_type type,
+		  struct libinput_event *event);
+
+static void
+libinput_fork_post_event(struct libinput_fork_services* services,
+			 struct libinput_device *device,
+			 struct libinput_event_keyboard *key_event)
+{
+	post_device_event(device, key_event->time,
+			  LIBINPUT_EVENT_KEYBOARD_KEY,
+			  &key_event->base);
+}
+
 LIBINPUT_EXPORT int
 libinput_setup_fork(struct libinput *libinput)
 {
