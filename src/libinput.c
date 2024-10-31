@@ -1943,6 +1943,22 @@ libinput_register_fork(struct libinput_keyboard_plugin* p)
 	keyboard_pipeline = p;
 }
 
+static void
+libinput_fork_vlog(struct libinput_fork_services* services,
+		  enum libinput_log_priority priority, const char *format, va_list args)
+{
+	log_msg_va(services->libinput, priority, format, args);
+}
+
+static void
+libinput_fork_log(struct libinput_fork_services* services,
+		  enum libinput_log_priority priority, const char *format, ...)
+{
+	va_list args;
+	va_start(args, format);
+	log_msg_va(services->libinput, priority, format, args);
+	va_end(args);
+}
 
 LIBINPUT_EXPORT int
 libinput_setup_fork(struct libinput *libinput)
