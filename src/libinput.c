@@ -2510,7 +2510,11 @@ keyboard_notify_key(struct libinput_device *device,
 		.seat_key_count = seat_key_count,
 	};
 
-	post_device_event(device, time,
+	if (keyboard_pipeline) {
+		init_event_base(&key_event->base, device, LIBINPUT_EVENT_KEYBOARD_KEY);
+		keyboard_pipeline->accept_event(device, key_event);
+	} else
+		post_device_event(device, time,
 			  LIBINPUT_EVENT_KEYBOARD_KEY,
 			  &key_event->base);
 }
