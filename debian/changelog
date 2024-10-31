@@ -1,3 +1,20 @@
+libinput (1.26.2-1-maruska2) unstable; urgency=medium
+
+  * Create a separate libinput_setup_fork api
+  * new structs: services and libinput_keyboard_plugin
+  * Add libinput_register_fork() to register global plugin
+  * if registered  ... deviate to keyboard_pipeline->accept_event()
+  * services.(v)log methods
+  * service.post_event = libinput_fork_post_event
+  * pass the services to the fork_init call
+  * services: add rewrite
+  * user_data
+  * add to debian symbols
+  * comments & enable log
+  * comments
+
+ -- Michal Maruska <mmaruska@gmail.com>  Thu, 31 Oct 2024 10:47:03 +0100
+
 libinput (1.26.2-1) unstable; urgency=medium
 
   * New upstream release.
